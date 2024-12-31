@@ -1,0 +1,43 @@
+name: Test Git Wrapped
+
+on:
+  push:
+    paths:
+      - 'git-wrapped.sh'
+  pull_request:
+    paths:
+      - 'git-wrapped.sh'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run Git Wrapped
+        run: |
+          chmod +x git-wrapped.sh
+          ./git-wrapped.sh
+          
+          # Check if file exists
+          if [ ! -f "git-wrapped-$(date +%Y).md" ]; then
+            echo "Output file not generated"
+            exit 1
+          fi
+          
+          # Check if file has content
+          if [ ! -s "git-wrapped-$(date +%Y).md" ]; then
+            echo "Output file is empty"
+            exit 1
+          fi
+          
+          # Check for required sections
+          file="git-wrapped-$(date +%Y).md"
+          for section in "Commits" "Monthly Activity" "Changes" "File Operations" "Top Contributors" "Most Used Words" "Commit Times" "File Types"; do
+            if ! grep -q "$section" "$file"; then
+              echo "Missing section: $section"
+              exit 1
+            fi
+          done
