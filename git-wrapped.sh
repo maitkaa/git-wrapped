@@ -5,7 +5,7 @@ OUTPUT="git-wrapped-${YEAR}.md"
 
 function write_header() {
     cat > "$OUTPUT" << EOF
-# 🎵 Git Wrapped ${YEAR}
+# 🎉 Git Wrapped ${YEAR}
 
 ## 📊 Your Year in Code
 
